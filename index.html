@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Washington RP | Staff Dashboard</title>
+    <link rel="icon" href="assets/logo.png">
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Login Screen -->
+    <div id="login-overlay">
+        <div class="login-card">
+            <img src="assets/logo.png" alt="Logo" id="login-avatar" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 1rem; object-fit: cover;">
+            <h2 id="login-title">WASHINGTON RP</h2>
+            <p id="login-subtitle" style="margin-bottom: 1.5rem; opacity: 0.7;">Identificati per accedere</p>
+            
+            <!-- AREA LOGIN: SOLO PASSWORD ORA -->
+            <div id="login-dynamic-area">
+                <div id="pass-state">
+                    <div class="input-group">
+                        <label style="color: var(--accent-purple); font-weight: 700; letter-spacing: 1px; font-size: 0.75rem;">CHIAVE DI ACCESSO STAFF</label>
+                        <input type="password" id="security-pass" placeholder="Password Staff" style="text-align: center; font-size: 1.1rem; letter-spacing: 2px; margin-top: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--accent-purple); color: white; border-radius: 8px; padding: 10px;" onkeydown="if(event.key==='Enter') verifySecurityPassword()">
+                    </div>
+                    <p id="security-error" style="color: var(--accent-red); margin: 15px 0; display: none; font-size: 0.8rem; font-weight: 700;">
+                        ❌ PASSWORD ERRATA! <br>TENTATIVI: <span id="attempts-count">5</span>
+                    </p>
+                    <button class="login-btn" onclick="verifySecurityPassword()" style="margin-top: 1rem; box-shadow: 0 4px 15px rgba(123, 44, 191, 0.3);">ACCEDI ALLA DASHBOARD</button>
+                </div>
+            </div>
+
+            <input type="hidden" id="login-user">
+        </div>
+    </div>
+
+    <!-- Il security-overlay è stato rimosso perché ora usiamo la card dinamica -->
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-container" id="dashboard">
+        
+        <div class="top-banner" style="background-image: url('assets/banner_inside.png');"></div>
+
+        <header class="header-nav">
+            <div class="header-left">
+                <div class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="user-profile" style="margin-left: 10px;">
+                    <img src="assets/logo.png" alt="PFP" class="user-pfp" id="nav-pfp">
+                    <span id="nav-username" style="font-weight: 600; font-size: 0.9rem;">Staff Name</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div style="display: flex; align-items: center; gap: 10px; margin-right: 20px;">
+                    <img src="assets/logo.png" alt="Logo" class="logo">
+                    <span style="font-weight: 700; letter-spacing: 1px;">WASHINGTON <span style="color: var(--accent-red);">RP</span></span>
+                </div>
+                <div class="notification-bell" onclick="toggleNotifPanel()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge" id="notif-count">0</span>
+                </div>
+                <div id="notif-panel" class="notif-panel">
+                    <h4>Notifiche</h4>
+                    <div id="notif-items-list">
+                        <p style="font-size: 0.75rem; opacity: 0.5; text-align: center;">Nessuna nuova notifica</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div id="overlay" onclick="toggleSidebar()"></div>
+
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-item active" onclick="showSection('home')">
+                <i class="fas fa-home"></i> Dashboard Home
+            </div>
+            <div class="sidebar-item" onclick="showSection('staff-service')">
+                <i class="fas fa-clock"></i> Staff Service
+            </div>
+            <div class="sidebar-item" onclick="showSection('sanzioni')">
+                <i class="fas fa-gavel"></i> Sanzioni (Warn/Ban)
+            </div>
+            <div class="sidebar-item" onclick="showSection('controllo-ban')">
+                <i class="fas fa-shield-halved"></i> Controllo Ban
+            </div>
+            <div class="sidebar-item" onclick="showSection('search')">
+                <i class="fas fa-search"></i> Cerca Soggetto
+            </div>
+            <div class="sidebar-item" onclick="showSection('inattivita')">
+                <i class="fas fa-user-slash"></i> Richiesta Inattività
+            </div>
+            <div class="sidebar-item" onclick="showSection('staff-list')">
+                <i class="fas fa-users"></i> Staff List
+            </div>
+            <div style="margin-top: 2rem; padding: 1rem; border-top: 1px solid var(--glass-border);">
+                <div class="sidebar-item" onclick="showSection('admin')">
+                    <i class="fas fa-user-shield"></i> Admin Area
+                </div>
+                <div class="sidebar-item" onclick="logout()" style="color: var(--accent-red);">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            
+            <!-- Home Section -->
+            <section id="home" class="section active">
+                <div class="home-welcome">
+                    <h1>Benvenuto in <span style="color: var(--accent-purple);">Washington RP</span></h1>
+                    <p>Dashboard ufficiale per la gestione del personale e delle sanzioni.</p>
+                    
+                    <div class="card" style="text-align: left; margin-top: 3rem; line-height: 1.6;">
+                        <h3>Benvenuto nella Dashboard Ufficiale</h3>
+                        <p style="margin: 1.5rem 0;">Questa piattaforma è nata dall'esigenza di centralizzare e professionalizzare la gestione del personale di <strong>Washington RP</strong>. In una community in continua crescita, la precisione e l'organizzazione sono fondamentali per garantire un'esperienza di gioco equa e sicura per tutti i cittadini.</p>
+                        
+                        <p style="margin-bottom: 1.5rem;">Chiediamo a ogni membro dello staff la massima <strong>serietà e attenzione</strong> nell'uso di questo strumento. Ogni azione compiuta qui lascia una traccia indelebile; agire con leggerezza o abusare dei propri poteri non solo danneggia la community, ma compromette la fiducia che l'amministrazione ha riposto in voi.</p>
+
+                        <h4>Sistemi Disponibili:</h4>
+                        <ul style="margin: 1rem 0; padding-left: 1.2rem;">
+                            <li style="margin-bottom: 0.8rem;"><strong>Staff Service (Shift):</strong> Registra l'inizio e la fine della tua attività sul campo.</li>
+                            <li style="margin-bottom: 0.8rem;"><strong>Staff List:</strong> Visualizza la lista ufficiale di tutto il personale attivo.</li>
+                            <li style="margin-bottom: 0.8rem;"><strong>Sanzioni (Warn/Ban):</strong> Gestisci provvedimenti come Warn, Ban, Kick e Strike con firma obbligatoria.</li>
+                            <li style="margin-bottom: 0.8rem;"><strong>Controlla Soggetto:</strong> Accedi alla cartella clinica e alla cronologia sanzioni di ogni giocatore.</li>
+                            <li style="margin-bottom: 0.8rem;"><strong>Richiesta Inattività:</strong> Comunica periodi di assenza per evitare richiami disciplinari.</li>
+                        </ul>
+
+                        <p style="margin: 1.5rem 0; font-style: italic; opacity: 0.8;">Se non capite il funzionamento di una sezione, vi invitiamo a <strong>rileggere attentamente questa guida</strong>. Qualora i dubbi persistano, non esitate ad <strong>aprire un ticket</strong> nel server Discord ufficiale per richiedere assistenza tecnica.</p>
+
+                        <div class="warning-box">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>ATTENZIONE:</strong> L'uso improprio di questa dashboard o la fuga di credenziali comporterà il <strong>DE-RANK immediato</strong>.
+                        </div>
+
+                        <!-- NUOVI LINK DISCORD -->
+                        <div class="discord-links-grid">
+                            <a href="https://discord.gg/YJs3V4nqCt" target="_blank" class="discord-card main-srv">
+                                <i class="fab fa-discord"></i>
+                                <div>
+                                    <h4>Server Principale</h4>
+                                    <p>Entra nel cuore di Washington RP</p>
+                                </div>
+                            </a>
+                            <a href="https://discord.gg/Uy6VMT6vKf" target="_blank" class="discord-card shop-srv">
+                                <i class="fab fa-discord"></i>
+                                <div>
+                                    <h4>Washington Shop</h4>
+                                    <p>Supportaci e migliora i nostri staff</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 2rem;">
+                            <img src="assets/logo.png" alt="Washington Logo" style="width: 200px; opacity: 0.9;">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Staff List Section -->
+            <section id="staff-list" class="section">
+                <h2 class="section-title"><i class="fas fa-users"></i> Lista Personale Staff</h2>
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3>Staff Ufficiale Washington RP</h3>
+                        <div class="search-bar" style="margin-bottom: 0; width: 300px; position: relative;">
+                            <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.5;"></i>
+                            <input type="text" id="staff-list-search" placeholder="🔍 Cerca staffer..." style="flex: 1; padding: 10px 10px 10px 40px; font-size: 0.85rem; background: rgba(255,255,255,0.05); border: 1px solid var(--accent-purple); border-radius: 10px; color: white;" oninput="filterStaffList()">
+                        </div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="staff-list-table">
+                            <thead>
+                                <tr>
+                                    <th>Staffer</th>
+                                    <th>Data Entrata</th>
+                                    <th>Grado / Ruolo</th>
+                                    <th>Stato</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staff-list-full-body">
+                                <!-- Populated via JS -->
+                                <tr><td colspan="4" style="text-align:center; opacity:0.5;">Caricamento lista...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Staff Service Section -->
+            <section id="staff-service" class="section">
+                <h2 class="section-title"><i class="fas fa-clock"></i> Staff Service Area</h2>
+                <div class="card">
+                    <h3>Il tuo Servizio Attuale</h3>
+                    <div id="service-timer" style="font-size: 2.5rem; font-weight: 700; margin: 1rem 0;">00:00:00</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="service-progress"></div>
+                    </div>
+                    <p style="font-size: 0.8rem; opacity: 0.6;">Obiettivo: 4 Ore (0%)</p>
+                    
+                    <div class="service-controls">
+                        <button class="btn btn-start" onclick="startService()"><i class="fas fa-play"></i> Avvia</button>
+                        <button class="btn btn-pause" onclick="pauseService()"><i class="fas fa-pause"></i> Pausa</button>
+                        <button class="btn btn-stop" onclick="stopService()"><i class="fas fa-stop"></i> Termina</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-users-viewfinder" style="color: var(--accent-purple);"></i> Staff in Servizio Ora</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="staff-list-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome Discord</th>
+                                    <th>Inizio Turno</th>
+                                    <th>Stato</th>
+                                </tr>
+                            </thead>
+                            <tbody id="active-staff-body">
+                                <tr><td colspan="3" style="text-align:center; opacity:0.5;">Nessuno in servizio</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3><i class="fas fa-trophy" style="color: #f1c40f;"></i> Classifica Ore Settimanali</h3>
+                        <div class="pagination-controls">
+                            <button class="btn-page" onclick="changeRankingPage(-1)"><i class="fas fa-chevron-left"></i></button>
+                            <span id="ranking-page-info">Pagina 1</span>
+                            <button class="btn-page" onclick="changeRankingPage(1)"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="staff-list-table">
+                            <thead>
+                                <tr>
+                                    <th>Pos.</th>
+                                    <th>Staffer</th>
+                                    <th>Ore Totali</th>
+                                    <th>Obiettivo (4h)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hours-ranking-body">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sanzioni Section -->
+            <section id="sanzioni" class="section">
+                <h2 class="section-title"><i class="fas fa-gavel"></i> Inserimento Sanzioni</h2>
+                <div class="card">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Tipologia Sanzione</label>
+                            <select id="sanc-type" onchange="updateFormStyle()">
+                                <option value="warn">Warn</option>
+                                <option value="ban">Ban</option>
+                                <option value="warn-discord">Warn Discord</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="position: relative;">
+                            <label>Nome Soggetto (Roblox/Discord)</label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="text" id="sanc-subject" placeholder="Nome Utente" oninput="debounceRobloxPreview(this.value, 'sanc-roblox-preview', 'sanc-suggestions')" autocomplete="off">
+                                <img id="sanc-roblox-preview" src="assets/logo.png" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent-purple); display: none; object-fit: cover;">
+                            </div>
+                            <div id="sanc-suggestions" class="roblox-suggestions"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Motivazione</label>
+                            <input type="text" id="sanc-reason" placeholder="Es. Fail RP, VDM...">
+                        </div>
+                        <div class="form-group" id="ban-dates" style="display: none;">
+                            <label>Fine Ban (Data)</label>
+                            <input type="date" id="sanc-expiry">
+                        </div>
+                        <div class="form-group">
+                            <label>Firmato da (Tuo Nome Discord @)</label>
+                            <input type="text" id="sanc-signature" placeholder="Es. @NomeStaff">
+                        </div>
+                    </div>
+                    <button class="login-btn" style="margin-top: 2rem;" onclick="submitSanc()">INVIA SANZIONE</button>
+                </div>
+            </section>
+
+            <!-- Inattività Section -->
+            <section id="inattivita" class="section">
+                <h2 class="section-title"><i class="fas fa-user-slash"></i> Richiesta Inattività</h2>
+                <div class="card">
+                    <h3>Modulo Congedo Staff</h3>
+                    <p style="opacity: 0.7; margin: 1rem 0;">Usa questo modulo per richiedere un periodo di inattività ufficiale.</p>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nome Discord (Obbligatoria la @)</label>
+                            <input type="text" id="ina-discord" placeholder="@nomeutente">
+                        </div>
+                        <div class="form-group">
+                            <label>Grado Staff</label>
+                            <input type="text" id="ina-rank" placeholder="Es. Senior Staff">
+                        </div>
+                        <div class="form-group">
+                            <label>Motivazione</label>
+                            <input type="text" id="ina-reason" placeholder="Motivo del congedo">
+                        </div>
+                        <div class="form-group">
+                            <label>Inizio Inattività</label>
+                            <input type="date" id="ina-start">
+                        </div>
+                        <div class="form-group">
+                            <label>Fine Inattività</label>
+                            <input type="date" id="ina-end">
+                        </div>
+                    </div>
+                    <button class="login-btn" style="margin-top: 2rem;" onclick="submitInactivity()">INVIA RICHIESTA</button>
+                </div>
+            </section>
+
+            <!-- Controllo Ban Section -->
+            <section id="controllo-ban" class="section">
+                <h2 class="section-title"><i class="fas fa-shield-halved"></i> Controllo Ban Attivi</h2>
+                <div class="card" id="active-bans-container">
+                    <!-- Populated via JS -->
+                    <p style="opacity: 0.5;">Nessun ban attivo trovato.</p>
+                </div>
+            </section>
+
+            <!-- Search Section -->
+            <section id="search" class="section">
+                <h2 class="section-title"><i class="fas fa-search"></i> Cerca Soggetto</h2>
+                <div class="card" style="position: relative;">
+                    <div class="search-bar" style="align-items: center;">
+                        <input type="text" id="search-input" placeholder="Inserisci Nome o ID..." style="flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; color: white;" oninput="debounceRobloxPreview(this.value, 'search-roblox-preview', 'search-suggestions')" autocomplete="off">
+                        <img id="search-roblox-preview" src="assets/logo.png" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent-purple); display: none; object-fit: cover; margin: 0 10px;">
+                        <button class="btn btn-start" onclick="searchSubject()"><i class="fas fa-search"></i> Cerca</button>
+                    </div>
+                    <div id="search-suggestions" class="roblox-suggestions" style="width: calc(100% - 150px); left: 2rem;"></div>
+                    <div id="search-results">
+                        <!-- History logs here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Area Section -->
+            <section id="admin" class="section">
+                <h2 class="section-title"><i class="fas fa-user-shield"></i> Area Amministratori</h2>
+                
+                <div id="admin-lock" class="admin-login-lock">
+                    <i class="fas fa-lock" style="font-size: 3rem; margin-bottom: 1rem; color: var(--accent-red);"></i>
+                    <h3>Accesso Restretto</h3>
+                    <p style="margin-bottom: 2rem;">Inserisci la password di sicurezza.</p>
+                    <input type="password" id="admin-pass-input" placeholder="Password Amministratore" onkeydown="if(event.key==='Enter') checkAdminLogin()" style="padding: 10px; margin-bottom: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: white;">
+                    <br>
+                    <button class="btn btn-start" onclick="checkAdminLogin()" style="margin: 0 auto;">SBLOCCA</button>
+                </div>
+
+                <div id="admin-content" style="display: none;">
+                    
+                    <!-- 1. GESTIONE PERSONALE STAFF (ACCESSI) -->
+                    <div class="card staff-management-card">
+                        <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-users-cog"></i> GESTIONE PERSONALE STAFF</h3>
+                        <div class="admin-management-grid">
+                            <div class="management-box" style="border-top: 4px solid #2ecc71;">
+                                <h4><i class="fas fa-user-plus" style="color: #2ecc71;"></i> ABILITA STAFF</h4>
+                                <div class="form-group">
+                                    <label>Data Iscrizione</label>
+                                    <input type="date" id="reg-staff-date">
+                                </div>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <label>Nick Discord Staff (Obbligatoria la @)</label>
+                                    <input type="text" id="reg-staff-nick" placeholder="@nomeutente">
+                                </div>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <label>Grado Staff</label>
+                                    <select id="reg-staff-rank">
+                                        <option value="" disabled selected>Scegli Grado</option>
+                                        <optgroup label="PROPRIETÀ">
+                                            <option value="Founder">Founder</option>
+                                            <option value="Assistant Founder">Assistant Founder</option>
+                                            <option value="Fondazione">Fondazione</option>
+                                            <option value="Co-Founder">Co-Founder</option>
+                                        </optgroup>
+                                        <optgroup label="ALTA AMMINISTRAZIONE">
+                                            <option value="Amministrazione">Amministrazione</option>
+                                            <option value="Owner">Owner</option>
+                                            <option value="Co-Owner">Co-Owner</option>
+                                            <option value="Gradi Gestionali">Gradi Gestionali</option>
+                                            <option value="Staff Manager">Staff Manager</option>
+                                            <option value="Staff Supervisor">Staff Supervisor</option>
+                                        </optgroup>
+                                        <optgroup label="GRADI ALTI">
+                                            <option value="Gradi Alti">Gradi Alti</option>
+                                            <option value="Head Admin">Head Admin</option>
+                                            <option value="Senior Admin">Senior Admin</option>
+                                            <option value="Admin">Admin</option>
+                                            <option value="Trial Admin">Trial Admin</option>
+                                        </optgroup>
+                                        <optgroup label="GRADI BASSI">
+                                            <option value="Gradi Bassi">Gradi Bassi</option>
+                                            <option value="Head Moderator">Head Moderator</option>
+                                            <option value="Senior Moderator">Senior Moderator</option>
+                                            <option value="Moderator">Moderator</option>
+                                            <option value="Trial Moderator">Trial Moderator</option>
+                                            <option value="Trial Staff">Trial Staff</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <button class="btn btn-start" style="width: 100%; margin-top: 1rem; justify-content: center;" onclick="registerStaff()">REGISTRA STAFF</button>
+                            </div>
+
+                            <div class="management-box" style="border-top: 4px solid var(--accent-red);">
+                                <h4><i class="fas fa-user-minus" style="color: var(--accent-red);"></i> DISABILITA STAFF</h4>
+                                <div class="form-group">
+                                    <label>Data Rimozione</label>
+                                    <input type="date" id="rem-staff-date">
+                                </div>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <label>Motivo</label>
+                                    <input type="text" id="rem-staff-reason" placeholder="Esempio: Dimissioni">
+                                </div>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <label>Nick Discord Staff (Obbligatoria la @)</label>
+                                    <input type="text" id="rem-staff-nick" placeholder="@nomeutente">
+                                </div>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <label>Grado (Opzionale)</label>
+                                    <select id="rem-staff-rank">
+                                        <option value="" selected>Qualsiasi Grado</option>
+                                        <option value="Founder">Founder</option>
+                                        <option value="Assistant Founder">Assistant Founder</option>
+                                        <option value="Fondazione">Fondazione</option>
+                                        <option value="Co-Founder">Co-Founder</option>
+                                        <option value="Amministrazione">Amministrazione</option>
+                                        <option value="Owner">Owner</option>
+                                        <option value="Co-Owner">Co-Owner</option>
+                                        <option value="Staff Manager">Staff Manager</option>
+                                        <option value="Admin">Admin</option>
+                                        <option value="Moderator">Moderator</option>
+                                        <option value="Trial Staff">Trial Staff</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-stop" style="width: 100%; margin-top: 1rem; justify-content: center;" onclick="removeStaff()">ELIMINA STAFF</button>
+                            </div>
+
+                            <div class="management-box" style="border-top: 4px solid var(--accent-purple);">
+                                <h4><i class="fas fa-user-edit" style="color: var(--accent-purple);"></i> MODIFICA NICK / RANK</h4>
+                                <p style="font-size: 0.7rem; opacity: 0.6; margin-bottom: 10px;">💡 Se cambi solo il grado, lascia vuoto "Nuovo Nick".</p>
+                                <div class="form-group">
+                                    <label>Motivo Modifica</label>
+                                    <input type="text" id="mod-staff-reason" placeholder="Es. Promozione o Cambio Nick">
+                                </div>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <label>Nick Attuale (@)</label>
+                                    <input type="text" id="mod-staff-old" placeholder="@nome_attuale">
+                                </div>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <label>Nuovo Nick (@) - <small>Opzionale</small></label>
+                                    <input type="text" id="mod-staff-new" placeholder="Lascia vuoto se non cambia">
+                                </div>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <label>Nuovo Grado</label>
+                                    <select id="mod-staff-rank">
+                                        <option value="" selected>Nessun Cambio Grado</option>
+                                        <option value="Founder">Founder</option>
+                                        <option value="Assistant Founder">Assistant Founder</option>
+                                        <option value="Fondazione">Fondazione</option>
+                                        <option value="Co-Founder">Co-Founder</option>
+                                        <option value="Amministrazione">Amministrazione</option>
+                                        <option value="Owner">Owner</option>
+                                        <option value="Co-Owner">Co-Owner</option>
+                                        <option value="Gradi Gestionali">Gradi Gestionali</option>
+                                        <option value="Staff Manager">Staff Manager</option>
+                                        <option value="Staff Supervisor">Staff Supervisor</option>
+                                        <option value="Gradi Alti">Gradi Alti</option>
+                                        <option value="Head Admin">Head Admin</option>
+                                        <option value="Senior Admin">Senior Admin</option>
+                                        <option value="Admin">Admin</option>
+                                        <option value="Trial Admin">Trial Admin</option>
+                                        <option value="Gradi Bassi">Gradi Bassi</option>
+                                        <option value="Head Moderator">Head Moderator</option>
+                                        <option value="Senior Moderator">Senior Moderator</option>
+                                        <option value="Moderator">Moderator</option>
+                                        <option value="Trial Moderator">Trial Moderator</option>
+                                        <option value="Trial Staff">Trial Staff</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-pause" style="width: 100%; margin-top: 1rem; justify-content: center;" onclick="modifyStaffNick()">AGGIORNA DATI STAFF</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. GESTIONE STRIKE STAFF -->
+                    <div class="card">
+                        <h3><i class="fas fa-exclamation-circle" style="color: var(--accent-red);"></i> GESTIONE STRIKE STAFF</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nome Discord / ID Staff</label>
+                                <input type="text" id="strike-target" placeholder="Es. @70mich">
+                            </div>
+                            <div class="form-group">
+                                <label>Motivazione Strike</label>
+                                <input type="text" id="strike-reason" placeholder="Motivo sanzione disciplinare">
+                            </div>
+                            <div class="form-group">
+                                <label>Numero Strike</label>
+                                <select id="strike-num">
+                                    <option value="1">Strike 1</option>
+                                    <option value="2">Strike 2</option>
+                                    <option value="3">Strike 3</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Firmato da (Tuo Nome)</label>
+                                <input type="text" id="strike-signature" placeholder="Tuo Nome Admin">
+                            </div>
+                        </div>
+                        <button class="login-btn" style="margin-top: 1.5rem;" onclick="submitStrike()">AGGIUNGI STRIKE</button>
+                    </div>
+
+                    <!-- 3. CONTROLLO STATO STAFF -->
+                    <div class="card">
+                        <h3><i class="fas fa-user-check"></i> CONTROLLO STATO STAFF</h3>
+                        <div class="search-bar">
+                            <input type="text" id="staff-check-input" placeholder="Cerca Staffer (@)..." style="flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; color: white;">
+                            <button class="btn btn-start" onclick="checkStaffStatus()"><i class="fas fa-user-check"></i> Controlla</button>
+                        </div>
+                        <div id="staff-status-result" style="margin-top: 1.5rem;"></div>
+                    </div>
+
+                    <!-- 4. GESTIONE SANZIONI GIOCATORI -->
+                    <div class="card">
+                        <h3><i class="fas fa-folder-open"></i> GESTIONE SANZIONI GIOCATORI</h3>
+                        <p style="opacity: 0.6; margin-bottom: 1.5rem;">Cerca un giocatore per gestire le sue sanzioni attive.</p>
+                        <div class="search-bar" style="position: relative;">
+                            <input type="text" id="admin-search-input" placeholder="Nome Roblox o Discord..." style="flex: 1; padding: 12px; background: transparent; border: 1px solid var(--accent-purple); border-radius: 8px; color: white;" oninput="debounceRobloxPreview(this.value, 'admin-roblox-preview', 'admin-suggestions')" autocomplete="off">
+                            <img id="admin-roblox-preview" src="assets/logo.png" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent-purple); display: none; object-fit: cover; margin: 0 10px;">
+                            <button class="btn btn-start" onclick="adminSearchSubject()"><i class="fas fa-folder-open"></i> Apri Cartella</button>
+                        </div>
+                        <div id="admin-suggestions" class="roblox-suggestions" style="width: calc(100% - 150px); left: 0;"></div>
+
+                        <div id="admin-management-view" style="display: none;">
+                            <h3 id="admin-target-name" style="margin: 2rem 0 1rem 0; border-left: 4px solid var(--accent-red); padding-left: 1rem;">Cartella: Nome</h3>
+                            <div class="admin-management-grid">
+                                <div class="management-box">
+                                    <h4><i class="fas fa-exclamation-triangle" style="color: #f1c40f;"></i> WARN</h4>
+                                    <div id="admin-warn-list"></div>
+                                </div>
+                                <div class="management-box">
+                                    <h4><i class="fas fa-gavel" style="color: var(--accent-red);"></i> BAN</h4>
+                                    <div id="admin-ban-list"></div>
+                                </div>
+                                <div class="management-box">
+                                    <h4><i class="fab fa-discord" style="color: #5865F2;"></i> WARN DISCORD</h4>
+                                    <div id="admin-warn-discord-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. RICHIESTE INATTIVITÀ -->
+                    <div class="card">
+                        <h3><i class="fas fa-user-slash"></i> RICHIESTE INATTIVITÀ PENDENTI</h3>
+                        <div id="admin-inactivity-list">
+                            <p style="opacity: 0.5;">Nessuna richiesta pendente.</p>
+                        </div>
+                    </div>
+
+                    <!-- 6. LOG GLOBALI E RESET -->
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h3><i class="fas fa-history"></i> LOG GLOBALI SISTEMA</h3>
+                            <button class="btn btn-stop" onclick="confirmResetHours()">RESET SETTIMANALE ORE</button>
+                        </div>
+                        
+                        <div class="log-group-container">
+                            <div class="log-column">
+                                <h4><i class="fas fa-clock"></i> Staff Service</h4>
+                                <div id="log-staff-service"></div>
+                            </div>
+                            <div class="log-column">
+                                <h4><i class="fas fa-sign-in-alt"></i> Accessi</h4>
+                                <div id="log-access"></div>
+                            </div>
+                            <div class="log-column">
+                                <h4><i class="fas fa-gavel"></i> Sanzioni</h4>
+                                <div id="log-sanctions"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+
+        <footer>
+            <div class="footer-brand">Washington RP Dashboard</div>
+            <p style="margin-top: 10px; opacity: 0.6; font-size: 0.8rem;">Creato da Brayna 2026 &bull; Tutti i diritti riservati</p>
+        </footer>
+
+    </div>
+
+    <!-- Custom Modal -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal">
+            <h3 id="modal-title">Conferma Azione</h3>
+            <p id="modal-message">Sei sicuro di voler procedere?</p>
+            <div id="modal-input-area" style="display: none;">
+                <textarea id="modal-textarea" class="modal-textarea" placeholder="Inserisci il motivo..."></textarea>
+            </div>
+            <div class="modal-btns">
+                <button class="btn btn-stop" id="modal-confirm-btn">CONFERMA</button>
+                <button class="btn btn-pause" onclick="closeModal()">ANNULLA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>
