@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Washington RP | ACCESSO NEGATO</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            background: #0f051d;
+        }
+        .blocked-card {
+            background: rgba(230, 57, 70, 0.1);
+            border: 2px solid var(--accent-red);
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 500px;
+            box-shadow: 0 0 30px rgba(230, 57, 70, 0.3);
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="blocked-card">
+        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--accent-red); margin-bottom: 1.5rem;"></i>
+        <h1 style="color: var(--accent-red); margin-bottom: 1rem;">ACCESSO BLOCCATO</h1>
+        <p style="font-size: 1.1rem; line-height: 1.6; opacity: 0.9;">
+            Hai effettuato <strong>5 tentativi errati</strong> di accesso.
+            <br><br>
+            Il sistema ha rilevato un comportamento sospetto. Forse non sei un membro autorizzato dello staff?
+            <br><br>
+            Il tuo nome <strong>Discord</strong> e il tuo profilo <strong>Roblox</strong> sono stati registrati nei log di sicurezza per accertamenti.
+        </p>
+        <div style="margin-top: 2rem; font-size: 0.8rem; opacity: 0.5;">
+            Protocollo di Sicurezza Washington RP v2.4
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>
